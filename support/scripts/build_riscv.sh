@@ -110,17 +110,16 @@ case "${KEY_IMPL,,}" in
         ;;
 esac
 
-rm -f $BASE_DIR/CMakeCache.txt
 if [[ -z "$RISCV_BUILD_DIR" || "$RISCV_BUILD_DIR" == "/" ]]; then
     echo "RISCV_BUILD_DIR must not be empty or root"
     exit 1
 fi
 
-rm -r "$RISCV_BUILD_DIR"/* > /dev/null 2>&1
 mkdir -p "$RISCV_BUILD_DIR" > /dev/null 2>&1
-cd "$RISCV_BUILD_DIR"
 
-cmake $BASE_DIR \
+# Intentionally do not clean the build tree: let CMake/Make dependency tracking
+# rebuild only what changed.
+cmake -S "$BASE_DIR" -B "$RISCV_BUILD_DIR" \
     -DCMAKE_SYSTEM_NAME=Generic \
     -DCMAKE_SYSTEM_PROCESSOR=riscv \
     -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY \
@@ -129,4 +128,4 @@ cmake $BASE_DIR \
     -DCMAKE_RANLIB="$RISCV_RANLIB" \
     -DCMAKE_OBJCOPY="$RISCV_OBJCOPY" \
     -DCMAKE_OBJDUMP="$RISCV_OBJDUMP" \
-    "${CMAKE_MODULE_FLAGS[@]}" && make
+    "${CMAKE_MODULE_FLAGS[@]}" && cmake --build "$RISCV_BUILD_DIR"
