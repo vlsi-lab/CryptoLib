@@ -116,7 +116,6 @@ if [[ -z "$RISCV_BUILD_DIR" || "$RISCV_BUILD_DIR" == "/" ]]; then
     exit 1
 fi
 
-mkdir -p "$BASE_DIR/build" > /dev/null 2>&1
 rm -r "$RISCV_BUILD_DIR"/* > /dev/null 2>&1
 mkdir -p "$RISCV_BUILD_DIR" > /dev/null 2>&1
 cd "$RISCV_BUILD_DIR"
