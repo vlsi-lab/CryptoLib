@@ -4,7 +4,7 @@
 
 # The "LOCALTGTS" defines the top-level targets that are implemented in this makefile
 # Any other target may also be given, in that case it will simply be passed through.
-LOCALTGTS := all clean debug internal kmc wolf
+LOCALTGTS := all clean debug internal kmc riscv wolf
 OTHERTGTS := $(filter-out $(LOCALTGTS),$(MAKECMDGOALS))
 
 # As this makefile does not build any real files, treat everything as a PHONY target
@@ -34,6 +34,9 @@ internal:
 
 kmc:
 	./support/scripts/kmc_docker_build.sh
+
+riscv:
+	./support/scripts/build_riscv.sh
 
 wolf:
 	./support/scripts/wolf_docker_build.sh

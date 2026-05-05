@@ -54,6 +54,20 @@ This will build the internal debug environment, with code coverage, testing, and
 *Other Build Configurations:*
 > * KMC, Minimal, WolfSSL, and other configurations have convenience scripts which can be referenced within the `./support/scripts/` directory.
 
+### RISC-V cross-compilation
+To cross-compile CryptoLib for RISC-V using the convenience target:
+
+> * make riscv
+
+To build the RISC-V version of the library the following variables must be set:
+> * RISCV_TOOLCHAIN_BIN=`<path-to-desired-riscv-toolchain-dir/bin/>`
+> * RISCV_TRIPLET=`riscv-<specifier>-elf`
+
+Either value can be overridden when invoking make:
+> * RISCV_TOOLCHAIN_BIN=/path/to/toolchain/bin RISCV_TRIPLET=riscv-unknown-elf make riscv
+
+The RISC-V build compiles the library only (it does not run host-side tests).
+
 *Code Coverage:*
 With the DCODECOV Flag set, users may produce code coverage results similarly to the code below:
 > * cmake -DMYSQL=1 -DENCTEST=1 -DDEBUG=1 -DCODECOV=1 ../
