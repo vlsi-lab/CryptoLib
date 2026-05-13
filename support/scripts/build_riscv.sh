@@ -9,19 +9,20 @@
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 source $SCRIPT_DIR/env.sh
 
-RISCV_TOOLCHAIN_BIN=${RISCV_TOOLCHAIN_BIN:-/home/enrico/tools/ncc-1.0.4-gcc/bin}
-RISCV_TRIPLET=${RISCV_TRIPLET:-riscv-gaisler-elf}
+RISCV_TOOLCHAIN=${RISCV_TOOLCHAIN:?RISCV_TOOLCHAIN must be set (e.g. export RISCV_TOOLCHAIN=/path/to/toolchain/bin)}
+RISCV_TRIPLET=${RISCV_TRIPLET:?RISCV_TRIPLET must be set (e.g. export RISCV_TRIPLET=riscv-unknown-elf)}
 RISCV_BUILD_DIR=${RISCV_BUILD_DIR:-$BASE_DIR/build/riscv}
 SA_IMPL=${SA_IMPL:-internal}
 MC_IMPL=${MC_IMPL:-internal}
 KEY_IMPL=${KEY_IMPL:-internal}
 CRYPTO_IMPL=${CRYPTO_IMPL:-custom}
+DEBUG=${DEBUG:-0}
 
-RISCV_CC=${RISCV_CC:-$RISCV_TOOLCHAIN_BIN/${RISCV_TRIPLET}-gcc}
-RISCV_AR=${RISCV_AR:-$RISCV_TOOLCHAIN_BIN/${RISCV_TRIPLET}-ar}
-RISCV_RANLIB=${RISCV_RANLIB:-$RISCV_TOOLCHAIN_BIN/${RISCV_TRIPLET}-ranlib}
-RISCV_OBJCOPY=${RISCV_OBJCOPY:-$RISCV_TOOLCHAIN_BIN/${RISCV_TRIPLET}-objcopy}
-RISCV_OBJDUMP=${RISCV_OBJDUMP:-$RISCV_TOOLCHAIN_BIN/${RISCV_TRIPLET}-objdump}
+RISCV_CC=${RISCV_CC:-$RISCV_TOOLCHAIN/${RISCV_TRIPLET}-gcc}
+RISCV_AR=${RISCV_AR:-$RISCV_TOOLCHAIN/${RISCV_TRIPLET}-ar}
+RISCV_RANLIB=${RISCV_RANLIB:-$RISCV_TOOLCHAIN/${RISCV_TRIPLET}-ranlib}
+RISCV_OBJCOPY=${RISCV_OBJCOPY:-$RISCV_TOOLCHAIN/${RISCV_TRIPLET}-objcopy}
+RISCV_OBJDUMP=${RISCV_OBJDUMP:-$RISCV_TOOLCHAIN/${RISCV_TRIPLET}-objdump}
 
 for REQUIRED_TOOL in "$RISCV_CC" "$RISCV_AR" "$RISCV_RANLIB" "$RISCV_OBJCOPY" "$RISCV_OBJDUMP"; do
     if [[ ! -x "$REQUIRED_TOOL" ]]; then
@@ -110,15 +111,18 @@ case "${KEY_IMPL,,}" in
         ;;
 esac
 
+if [[ "$DEBUG" == "1" ]]; then
+    CMAKE_MODULE_FLAGS+=("-DDEBUG=1")
+fi
+
 if [[ -z "$RISCV_BUILD_DIR" || "$RISCV_BUILD_DIR" == "/" ]]; then
     echo "RISCV_BUILD_DIR must not be empty or root"
     exit 1
 fi
 
+rm -rf "$RISCV_BUILD_DIR"
 mkdir -p "$RISCV_BUILD_DIR" > /dev/null 2>&1
 
-# Intentionally do not clean the build tree: let CMake/Make dependency tracking
-# rebuild only what changed.
 cmake -S "$BASE_DIR" -B "$RISCV_BUILD_DIR" \
     -DCMAKE_SYSTEM_NAME=Generic \
     -DCMAKE_SYSTEM_PROCESSOR=riscv \
