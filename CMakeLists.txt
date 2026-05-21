@@ -61,8 +61,7 @@ option(SYSTEM_INSTALL "SystemInstall" OFF)
 option(TEST "Test" OFF)
 option(SA_FILE "Save Security Association to File" OFF)
 option(KEY_VALIDATION "Validate existance of key duplication" OFF)
-option(SKIP_SA_INIT  "Skip SA initialization phase"  OFF)
-option(SKIP_KEY_INIT "Skip Key initialization phase" OFF)
+set(ZERO_INIT "bss" CACHE STRING "Init mode: none, bss, c")
 option(KMC_MDB_RH "KMC-MDB-RedHat-Integration-Testing" OFF) #Disabled by default, enable with: -DKMC_MDB_RH=ON
 option(KMC_MDB_DB "KMC-MDB-Debian-Integration-Testing" OFF) #Disabled by default, enable with: -DKMC_MDB_DB=ON
 option(CRYPTO_EPROC "Enables the building and use of Extended Procedures" OFF) #Disabled by default, enable with -DCRYPTO_EPROC=ON
@@ -149,12 +148,16 @@ if(KEY_VALIDATION)
     add_definitions(-DKEY_VALIDATION)
 endif()
 
-if(SKIP_SA_INIT)
-    add_definitions(-DSKIP_SA_INIT)
-endif()
-
-if(SKIP_KEY_INIT)
-    add_definitions(-DSKIP_KEY_INIT)
+if(ZERO_INIT STREQUAL "bss")
+    add_definitions(-DBSS_ZERO_INIT)
+    message(STATUS "ZERO_INIT=bss: standard .bss zero-init")
+elseif(ZERO_INIT STREQUAL "c")
+    add_definitions(-DC_ZERO_INIT)
+    message(STATUS "ZERO_INIT=c: C manual zeroing in key_init/sa_init")
+elseif(ZERO_INIT STREQUAL "none")
+    message(STATUS "ZERO_INIT=none: no zeroing, can be used to link global data to custom data sections")
+else()
+    message(FATAL_ERROR "Invalid ZERO_INIT='${ZERO_INIT}'. Valid: none, bss, c")
 endif()
 
 if(DEBUG)

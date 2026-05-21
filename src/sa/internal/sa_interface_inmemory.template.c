@@ -672,7 +672,6 @@ int32_t sa_init(void)
 
     if (use_internal)
     {
-        #ifndef SKIP_SA_INIT
         for (int x = 0; x < NUM_SA; x++)
         {
             sa[x].spi       = x;
@@ -707,7 +706,6 @@ int32_t sa_init(void)
                 sa[x].arsn[y] = 0;
             }
         }
-        #endif
 
         status = sa_populate();
 #ifdef KEY_VALIDATION

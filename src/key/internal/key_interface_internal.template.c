@@ -55,7 +55,6 @@ static int32_t key_init(void)
 {
     int32_t status = CRYPTO_LIB_SUCCESS;
     // Initialize all to zero
-    #ifndef SKIP_KEY_INIT
     for (uint32_t i = 0; i < NUM_KEYS; i++)
     {
         for (uint32_t j = 0; j < KEY_SIZE; j++)
@@ -65,7 +64,6 @@ static int32_t key_init(void)
         key_ring[i].key_len   = 0;
         key_ring[i].key_state = 0;
     }
-    #endif
 
     // Master Keys
     // 0 - 000102030405060708090A0B0C0D0E0F000102030405060708090A0B0C0D0E0F -> ACTIVE

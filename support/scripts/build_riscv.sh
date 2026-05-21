@@ -17,7 +17,11 @@ MC_IMPL=${MC_IMPL:-internal}
 KEY_IMPL=${KEY_IMPL:-internal}
 CRYPTO_IMPL=${CRYPTO_IMPL:-custom}
 DEBUG=${DEBUG:-0}
-SKIP_INIT=${SKIP_INIT:-0}
+ZERO_INIT=${ZERO_INIT:-bss}
+case "${ZERO_INIT}" in
+    none|bss|c) ;;
+    *) echo "Invalid ZERO_INIT '${ZERO_INIT}'. Valid values: none, bss, c"; exit 1 ;;
+esac
 
 RISCV_CC=${RISCV_CC:-$RISCV_TOOLCHAIN/${RISCV_TRIPLET}-gcc}
 RISCV_AR=${RISCV_AR:-$RISCV_TOOLCHAIN/${RISCV_TRIPLET}-ar}
@@ -116,10 +120,7 @@ if [[ "$DEBUG" == "1" ]]; then
     CMAKE_MODULE_FLAGS+=("-DDEBUG=1")
 fi
 
-if [[ "$SKIP_INIT" == "1" ]]; then
-    CMAKE_MODULE_FLAGS+=("-DSKIP_SA_INIT=1")
-    CMAKE_MODULE_FLAGS+=("-DSKIP_KEY_INIT=1")
-fi
+CMAKE_MODULE_FLAGS+=("-DZERO_INIT=${ZERO_INIT}")
 
 if [[ -z "$RISCV_BUILD_DIR" || "$RISCV_BUILD_DIR" == "/" ]]; then
     echo "RISCV_BUILD_DIR must not be empty or root"
