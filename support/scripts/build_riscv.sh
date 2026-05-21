@@ -17,6 +17,7 @@ MC_IMPL=${MC_IMPL:-internal}
 KEY_IMPL=${KEY_IMPL:-internal}
 CRYPTO_IMPL=${CRYPTO_IMPL:-custom}
 DEBUG=${DEBUG:-0}
+SKIP_INIT=${SKIP_INIT:-0}
 
 RISCV_CC=${RISCV_CC:-$RISCV_TOOLCHAIN/${RISCV_TRIPLET}-gcc}
 RISCV_AR=${RISCV_AR:-$RISCV_TOOLCHAIN/${RISCV_TRIPLET}-ar}
@@ -113,6 +114,11 @@ esac
 
 if [[ "$DEBUG" == "1" ]]; then
     CMAKE_MODULE_FLAGS+=("-DDEBUG=1")
+fi
+
+if [[ "$SKIP_INIT" == "1" ]]; then
+    CMAKE_MODULE_FLAGS+=("-DSKIP_SA_INIT=1")
+    CMAKE_MODULE_FLAGS+=("-DSKIP_KEY_INIT=1")
 fi
 
 if [[ -z "$RISCV_BUILD_DIR" || "$RISCV_BUILD_DIR" == "/" ]]; then

@@ -61,6 +61,8 @@ option(SYSTEM_INSTALL "SystemInstall" OFF)
 option(TEST "Test" OFF)
 option(SA_FILE "Save Security Association to File" OFF)
 option(KEY_VALIDATION "Validate existance of key duplication" OFF)
+option(SKIP_SA_INIT  "Skip SA initialization phase"  OFF)
+option(SKIP_KEY_INIT "Skip Key initialization phase" OFF)
 option(KMC_MDB_RH "KMC-MDB-RedHat-Integration-Testing" OFF) #Disabled by default, enable with: -DKMC_MDB_RH=ON
 option(KMC_MDB_DB "KMC-MDB-Debian-Integration-Testing" OFF) #Disabled by default, enable with: -DKMC_MDB_DB=ON
 option(CRYPTO_EPROC "Enables the building and use of Extended Procedures" OFF) #Disabled by default, enable with -DCRYPTO_EPROC=ON
@@ -145,6 +147,14 @@ endif()
 
 if(KEY_VALIDATION)
     add_definitions(-DKEY_VALIDATION)
+endif()
+
+if(SKIP_SA_INIT)
+    add_definitions(-DSKIP_SA_INIT)
+endif()
+
+if(SKIP_KEY_INIT)
+    add_definitions(-DSKIP_KEY_INIT)
 endif()
 
 if(DEBUG)

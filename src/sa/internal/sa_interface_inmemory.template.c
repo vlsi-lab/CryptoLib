@@ -567,7 +567,7 @@ int32_t sa_populate(void)
     sa[15].gvcid_blk.vcid  = 7;
     sa[15].gvcid_blk.mapid = TYPE_TC;
 
-    int32_t status = sa_perform_save(&sa[0]);
+    int32_t status = sa_save_sa(&sa[0]);
     return status;
 }
 
@@ -672,6 +672,7 @@ int32_t sa_init(void)
 
     if (use_internal)
     {
+        #ifndef SKIP_SA_INIT
         for (int x = 0; x < NUM_SA; x++)
         {
             sa[x].spi       = x;
@@ -706,6 +707,7 @@ int32_t sa_init(void)
                 sa[x].arsn[y] = 0;
             }
         }
+        #endif
 
         status = sa_populate();
 #ifdef KEY_VALIDATION
