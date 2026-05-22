@@ -146,6 +146,11 @@ if(CRYPTO_KMC)
 endif()
 
 if(CRYPTO_WOLFSSL)
+    if(DEFINED WOLFSSL_INSTALL_DIR)
+        include_directories(${WOLFSSL_INSTALL_DIR}/include)
+        link_directories(${WOLFSSL_INSTALL_DIR}/lib)
+    endif()
+    add_compile_definitions(WOLFSSL_NO_SOCK NO_WRITEV)
     target_link_libraries(crypto wolfssl)
 endif()
 

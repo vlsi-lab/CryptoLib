@@ -51,7 +51,9 @@ case "${CRYPTO_IMPL,,}" in
         CMAKE_MODULE_FLAGS+=("-DCRYPTO_KMC=1")
         ;;
     wolfssl)
+        WOLFSSL_INSTALL_DIR=${WOLFSSL_INSTALL_DIR:?WOLFSSL_INSTALL_DIR must be set when CRYPTO_IMPL=wolfssl (e.g. export WOLFSSL_INSTALL_DIR=/path/to/wolfssl/install)}
         CMAKE_MODULE_FLAGS+=("-DCRYPTO_WOLFSSL=1")
+        CMAKE_MODULE_FLAGS+=("-DWOLFSSL_INSTALL_DIR=${WOLFSSL_INSTALL_DIR}")
         ;;
     *)
         echo "Invalid CRYPTO_IMPL '${CRYPTO_IMPL}'. Valid values: custom, libgcrypt, kmc, wolfssl"
